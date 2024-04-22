@@ -38,7 +38,7 @@ public class ScoreBoard2 extends JPanel implements KeyListener {
         this.mainLabel.add(title);
         this.scoreParser = new JSONParser();
 
-        try (FileReader reader = new FileReader("Tetris_game-main/Tetris_game/src/scoreData.json")) {
+        try (FileReader reader = new FileReader("Tetris_game/src/scoreData.json")) {
             // 파일로부터 JSON 배열을 읽어오기
             JSONArray scoreArray = (JSONArray) scoreParser.parse(reader);
 

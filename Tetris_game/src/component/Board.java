@@ -545,7 +545,7 @@ public class Board extends JPanel {
 				JSONParser parser = new JSONParser();
 
 				try {
-					FileReader reader = new FileReader("Tetris_game-main/Tetris_game/src/scoreData.json");
+					FileReader reader = new FileReader("Tetris_game/src/scoreData.json");
 					Object obj = parser.parse(reader);
 					scoreList = (JSONArray) obj;
 					reader.close();
@@ -561,7 +561,7 @@ public class Board extends JPanel {
 				scoreList.add(scoreData);
 
 				// 파일에 새 데이터 쓰기
-				try (FileWriter file = new FileWriter("Tetris_game-main/Tetris_game/src/scoreData.json")) {
+				try (FileWriter file = new FileWriter("Tetris_game/src/scoreData.json")) {
 					file.write(scoreList.toJSONString());
 					file.flush();
 				} catch (Exception e) {

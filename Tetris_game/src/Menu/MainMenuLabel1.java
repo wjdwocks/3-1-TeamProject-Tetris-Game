@@ -109,7 +109,7 @@ public class MainMenuLabel1 extends JPanel implements KeyListener {
                 break;
             case 2: // Exits 버튼을 누르면 저장되게
                 System.out.println("Exit Selected");
-                try (FileWriter file = new FileWriter("Tetris_game-main/Tetris_game/src/Settings.json")) {
+                try (FileWriter file = new FileWriter("Tetris_game/src/Settings.json")) {
                     file.write(Main.SettingObject.toJSONString());
                     file.flush();
                 } catch (Exception e) {
