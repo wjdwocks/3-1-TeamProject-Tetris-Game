@@ -115,7 +115,7 @@ public class ClassicModeLabel1  extends JPanel implements KeyListener {
                 Main.gamePanel.timer.start();
                 Main.gamePanel.setSize(Main.SCREEN_WIDTH[0], Main.SCREEN_HEIGHT[0]);
                 Main.gamePanel.setVisible(true);
-
+                Main.gamePanel.mode = 0;
 
                 // 여기서 다음 화면으로 넘어가는 로직을 구현
                 break;
@@ -125,7 +125,7 @@ public class ClassicModeLabel1  extends JPanel implements KeyListener {
                 Main.gamePanel.timer.start();
                 Main.gamePanel.setSize(Main.SCREEN_WIDTH[0], Main.SCREEN_HEIGHT[0]);
                 Main.gamePanel.setVisible(true);
-
+                Main.gamePanel.mode = 1;
                 // 여기서 다음 화면으로 넘어가는 로직을 구현
                 break;
             case 2: // Hard
@@ -134,7 +134,7 @@ public class ClassicModeLabel1  extends JPanel implements KeyListener {
                 Main.gamePanel.timer.start();
                 Main.gamePanel.setSize(Main.SCREEN_WIDTH[0], Main.SCREEN_HEIGHT[0]);
                 Main.gamePanel.setVisible(true);
-
+                Main.gamePanel.mode = 2;
                 // 여기서 다음 화면으로 넘어가는 로직을 구현
                 break;
             case 3: // Back(이전화면)

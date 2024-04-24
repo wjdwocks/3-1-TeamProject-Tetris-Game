@@ -55,7 +55,7 @@ public class Board extends JPanel {
 	private Block nextcurr; // 다음 블럭
 
 	public int mode = 1; // 난이도 설정 easy == 0, normal == 1, hard == 2;
-
+	public int item = 0; // itemMode 0 == false(보통모드), 1 == true(아이템모드);
 	public boolean gameOver = false; // 게임오버를 알려주는변수 true == 게임오버
 
 
@@ -531,7 +531,8 @@ public class Board extends JPanel {
 	public void GameOver() {
 		timer.stop(); // 타이머를 멈춥니다.
 		gameOver = true;
-		switchToScreen(Main.scoreBoard1);
+		Main.normalScoreBoard1.update();
+		switchToScreen(Main.normalScoreBoard1);
 		int response = JOptionPane.showConfirmDialog(this, "점수를 저장하시겠습니까?", "Game Over", JOptionPane.YES_NO_OPTION);
 
 		if (response == JOptionPane.YES_OPTION) {
@@ -545,7 +546,7 @@ public class Board extends JPanel {
 				JSONParser parser = new JSONParser();
 
 				try {
-					FileReader reader = new FileReader("Tetris_game/src/scoreData.json");
+					FileReader reader = new FileReader("Tetris_game/src/NormalScoreData.json");
 					Object obj = parser.parse(reader);
 					scoreList = (JSONArray) obj;
 					reader.close();
@@ -553,15 +554,23 @@ public class Board extends JPanel {
 					// 파일이 없거나 읽을 수 없을 때 예외 처리
 				}
 
+				for(Object item : scoreList) // 최신 상태임을 나타내는 키값 recent에 대항하는 값을 기존의 모든 object들에 대하여 0으로 바꿔줌.
+				{
+					JSONObject gameData = (JSONObject) item;
+					gameData.put("recent", 0);
+				}
+
 				// 새 데이터 추가
 				JSONObject scoreData = new JSONObject();
 				scoreData.put("mode", mode);
 				scoreData.put("scores", scores); // 'scores' 변수의 실제 타입에 따라 적절히 처리해야 함
 				scoreData.put("name", name);
+				scoreData.put("item", item);
+				scoreData.put("recent", 1); // 가장 최근에 끝난 게임임을 알려주는 심볼
 				scoreList.add(scoreData);
 
 				// 파일에 새 데이터 쓰기
-				try (FileWriter file = new FileWriter("Tetris_game/src/scoreData.json")) {
+				try (FileWriter file = new FileWriter("Tetris_game/src/NormalScoreData.json")) {
 					file.write(scoreList.toJSONString());
 					file.flush();
 				} catch (Exception e) {
