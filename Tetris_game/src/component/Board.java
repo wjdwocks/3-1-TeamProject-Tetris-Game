@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import Menu.Main;
@@ -44,6 +45,7 @@ public class Board extends JPanel {
 	int level = 0; // 현재 레벨
 	int lines = 0; // 현재 지워진 라인 수
 	int bricks = 0; // 생성된 벽돌의 개수
+	boolean isAnimating = false;
 	String name;
 
 	private boolean isPaused = false; // 게임이 일시 중지되었는지 나타내는 변수
@@ -57,6 +59,9 @@ public class Board extends JPanel {
 	public int mode = 1; // 난이도 설정 easy == 0, normal == 1, hard == 2;
 	public int item = 0; // itemMode 0 == false(보통모드), 1 == true(아이템모드);
 	public boolean gameOver = false; // 게임오버를 알려주는변수 true == 게임오버
+	private Timer timers = null;
+
+	private boolean isAnimationDone = true; // 새로운 멤버 변수 추가
 
 
 
@@ -96,8 +101,8 @@ public class Board extends JPanel {
 		timer = new Timer(initInterval, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				moveDown(); // 블록 아래로 이동
-				drawBoard(); // 보드 그리기
+						moveDown(); // 블록 아래로 이동
+						drawBoard(); // 보드 그리기
 
 			}
 		});
@@ -206,8 +211,7 @@ public class Board extends JPanel {
 		}
 	}
 
-
-	private void checkLines() {
+	/*private void checkLines() {
 		for (int i = HEIGHT - 1; i >= 0; i--) {
 			boolean lineFull = true;
 			for (int j = 0; j < WIDTH; j++) {
@@ -227,7 +231,78 @@ public class Board extends JPanel {
 				lines++; // 완성된 라인 수 증가
 			}
 		}
+	}*/
+
+
+	private void checkLines() {
+		ArrayList<Integer> fullLines = new ArrayList<>();
+
+		for (int i = HEIGHT - 1; i >= 0; i--) {
+			boolean lineFull = true;
+			for (int j = 0; j < WIDTH; j++) {
+				if (board[i][j] == 0) {
+					lineFull = false;
+					break;
+				}
+			}
+			if (lineFull) {
+				fullLines.add(i);
+			}
+		}
+
+		if (!fullLines.isEmpty()) {
+			timer.stop();
+			animateAndDeleteLines(fullLines);
+
+
+		}
 	}
+
+	private void animateAndDeleteLines(ArrayList<Integer> a) {
+
+		final int[] count = {0};
+		isAnimationDone = false;
+		timers = new Timer(50, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// isAnimationDone이 false일 때만 실행
+					if (count[0] < 4) { // 1초 동안 총 6번의 변경 (5번의 빨간색/흰색 전환)
+						for (int line : a) {
+							Color color = (count[0] % 2 == 0) ? Color.RED : Color.WHITE;
+							Arrays.fill(color_board[line], color);
+						}
+
+						drawBoard(); // 보드 다시 그리기
+						count[0]++;
+					} else {
+						timers.stop();
+						// 애니메이션이 끝나면 실제로 줄을 삭제
+						for (int line : a) {
+							for (int k = line; k > 0; k--) {
+								board[k] = Arrays.copyOf(board[k - 1], WIDTH);
+								color_board[k] = Arrays.copyOf(color_board[k-1], WIDTH);
+							}
+						}
+
+						Arrays.fill(board[0], 0);
+						Arrays.fill(color_board[0], Color.WHITE);
+						drawBoard();
+
+
+						scores += 100 * a.size();
+						lines += a.size(); // 완성된 라인 수 증가
+						isAnimationDone = true; // 애니메이션 완료 후 true로 설정
+						timer.start();
+
+					}
+			}
+		});
+		if(!isAnimationDone)
+			timers.start();
+
+	}
+
+
 
 	// 현재 블록을 아래로 이동할 수 있는지 확인하는 메소드
 	private boolean canMoveDown() {
@@ -304,23 +379,26 @@ public class Board extends JPanel {
 		if (canMoveDown()) { // 아래로 이동할 수 있는 경우
 			y++; // 블록을 아래로 이동
 			scores += point;
+			placeBlock(); // 게임 보드에 현재 블록의 새 위치를 표시합니다.
 
 
 		} else { // 아래로 이동할 수 없는 경우 (다른 블록에 닿거나 바닥에 닿은 경우)
 			placeBlock(); // 현재 위치에 블록을 고정시킵니다.
-			checkLines(); // 완성된 라인이 있는지 확인합니다.
-			checkLines(); // 완성된 라인이 있는지 확인합니다.
 			curr = nextcurr; // 다음블록을 현재 블록으로 설정합니다.
 			nextcurr = getRandomBlock(); // 새로운 블록을 무작위로 가져옵니다.
 			x = 3; // 새 블록의 x좌표를 시작 x 좌표를 설정합니다.
 			y = 0; // 새 블록의 y좌표를 시작 y 좌표를 설정합니다.
+			checkLines(); // 완성된 라인이 있는지 확인합니다.
+			if(isAnimationDone) {
+				placeBlock();
+			}
 			if (!canMoveDown()) { // 새 블록이 움직일 수 없는 경우 (게임 오버)
-				GameOver();
+				//GameOver();
 				
 
 			}
 		}
-		placeBlock(); // 게임 보드에 현재 블록의 새 위치를 표시합니다.
+
 	}
 
 
@@ -344,11 +422,7 @@ public class Board extends JPanel {
 		placeBlock(); // 게임 보드에 현재 블록의 새 위치를 표시합니다.
 	}
 	private void placeBlock() {
-		// 현재 떨어지고 있는 블록(curr)을 게임보드(board)에 배치하고, JTextPane(pane)에 해당블록의 시각적 표현을 업데이트 하는 역할
-		//StyledDocument doc = pane.getStyledDocument(); // 현재 JTextPane의 스타일이 적용된 문서를 가져옵니다.
-		//SimpleAttributeSet styles = new SimpleAttributeSet(); // 스타일 속성을 설정하기 위한 객체를 생성합니다.
-		//StyleConstants.setForeground(styles, curr.getColor()); // 현재 블록의 색상을 스타일 속성에 설정합니다.
-		//StyleConstants.setForeground(styles, nextcurr.getColor()); // 현재 블록의 색상을 스타일 속성에 설정합니다.
+
 		for (int j = 0; j < curr.height(); j++) {// 현재*/ 블록의 높이만큼 반복합니다.
 			for (int i = 0; i < curr.width(); i++) {// 현재 블록의 너비만큼 반복합니다.
 				if (curr.getShape(i, j) != 0 && board[y + j][x + i] == 0) {// 보드에 0이아니면 그대로 유지해야만 함. 아니면 내려가면서 다른 블럭 지움
@@ -359,11 +433,6 @@ public class Board extends JPanel {
 		}
 	}
 
-
-	public void reset() {
-		// 게임 보드를 초기화합니다. 20x10 크기의 2차원 배열을 새로 생성합니다.
-		this.board = new int[20][10];
-	}
 
 
 	public void sideBoard() {
@@ -427,7 +496,7 @@ public class Board extends JPanel {
 	}
 
 	public void NextBlocknscore() {
-		//StringBuffer nb = new StringBuffer(); // 문자열을 효율적으로 더하기 위한 StringBuffer 인스턴스 생성
+
 		StyledDocument doc = nextpane.getStyledDocument();
 		StyleConstants.setForeground(styleSet, Color.WHITE);
 		nextpane.setText("");
@@ -493,46 +562,6 @@ public class Board extends JPanel {
 		nextpane.setStyledDocument(doc); // 스타일이 적용된 문서를 다시 JTextPane에 설정
 	}
 
-	// 다음블럭표시 및 점수부분을 담당하는 함수, drawBoard 할 때 호출됨.
-	/*public void NextBlocknscore() {
-		StringBuffer nb = new StringBuffer(); // 문자열을 효율적으로 더하기 위한 StringBuffer 인스턴스 생성
-
-		// 상단 경계선을 그립니다.
-		nb.append("NEXT");// NEXT블럭의 상단경계선
-		nb.append("\n"); // 줄 바꿈을 추가하여 경계선 다음에 내용이 오도록 합니다.
-		nb.append("\n"); // 줄 바꿈을 추가하여 경계선 다음에 내용이 오도록 합니다.
-
-
-		// 다음블럭을 처리하는 로직
-		for (int i = 0; i < 2; i++) {
-			//NEXT 블럭 표시
-			for (int k = 0; k < nextcurr.width(); k++) {
-				if (nextcurr.width() == 4 && i == 1) // "OOOO"만 너비가 4이므로 따로 처리
-					break;
-				if (nextcurr.getShape(k, i) == 1)
-					nb.append("O"); // 나머지 블럭들 표시
-				else nb.append(" ");
-			}
-			nb.append("\n");
-		}
-
-		//공백추가
-		for (int i = 0; i < 7; i++) {
-			nb.append("\n");
-		}
-
-		// 블럭,라인,점수,레벨 표시
-		nb.append(String.format("BLOCK : %3d\n\n", bricks));
-		nb.append(String.format("LINES : %3d\n\n", lines));
-		nb.append(String.format("SCORE : %3d\n\n", scores));
-		nb.append(String.format("LEVEL : %3d\n\n", level));
-
-		nextpane.setText(nb.toString()); // StringBuffer에 저장된 문자열을 JTextPane에 설정합니다.
-
-		StyledDocument doc = nextpane.getStyledDocument(); // JTextPane의 스타일이 적용된 문서를 가져옵니다.
-		doc.setParagraphAttributes(0, doc.getLength(), styleSet, false); // 가져온 문서에 스타일 속성을 적용합니다.
-		nextpane.setStyledDocument(doc); // 스타일이 적용된 문서를 다시 JTextPane에 설정
-	}*/
 
 	//일정 점수 도달하면 레벨+, 속도+, 얻는 점수+ 조정하는 함수, moveDown(), TimerAction에 호출됨
 	public void setLevel() {
@@ -740,12 +769,13 @@ public class Board extends JPanel {
 						scores += point;
 					}
 					placeBlock();
-					checkLines();
 					curr = nextcurr;
 					nextcurr = getRandomBlock();
 					x = 3; // 새 블록의 x좌표를 시작 x 좌표를 설정합니다.
 					y = 0; // 새 블록의 y좌표를 시작 y 좌표를 설정합니다.
-					placeBlock();
+					checkLines();
+					if(isAnimationDone)
+						placeBlock();
 					drawBoard();
 					break;
 				case KeyEvent.VK_Q:
