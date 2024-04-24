@@ -17,7 +17,7 @@ public class Main {
     public static JFrame frame;
     public static JPanel mainPanel;
     public static CardLayout cardLayout;
-    public static final int SCREEN_WIDTH[] = {1280, 1024, 960, 490};
+    public static final int SCREEN_WIDTH[] = {1280, 1024, 960, 460};
     public static final int SCREEN_HEIGHT[] = {720, 576, 540, 740};
     public static MainMenuLabel1 mainMenu1;
     public static OptionsLabel1 optionMenu1;
