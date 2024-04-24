@@ -17,8 +17,8 @@ public class Main {
     public static JFrame frame;
     public static JPanel mainPanel;
     public static CardLayout cardLayout;
-    public static final int SCREEN_WIDTH[] = {1280, 1024, 960};
-    public static final int SCREEN_HEIGHT[] = {720, 576, 540};
+    public static final int SCREEN_WIDTH[] = {1280, 1024, 960, 490};
+    public static final int SCREEN_HEIGHT[] = {720, 576, 540, 740};
     public static MainMenuLabel1 mainMenu1;
     public static OptionsLabel1 optionMenu1;
     public static MainMenuLabel2 mainMenu2;
@@ -126,7 +126,7 @@ public class Main {
 
         gamePanel = new Board();
         //gamePanel.mode = 2;
-        gamePanel.setSize(SCREEN_WIDTH[0], SCREEN_HEIGHT[0]);
+        gamePanel.setSize(SCREEN_WIDTH[3], SCREEN_HEIGHT[3]);
         gamePanel.setVisible(true);
         gamePanel.setName("game");
 
