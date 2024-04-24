@@ -45,7 +45,6 @@ public class Board extends JPanel {
 	int level = 0; // 현재 레벨
 	int lines = 0; // 현재 지워진 라인 수
 	int bricks = 0; // 생성된 벽돌의 개수
-	boolean isAnimating = false;
 	String name;
 
 	private boolean isPaused = false; // 게임이 일시 중지되었는지 나타내는 변수
@@ -211,27 +210,6 @@ public class Board extends JPanel {
 		}
 	}
 
-	/*private void checkLines() {
-		for (int i = HEIGHT - 1; i >= 0; i--) {
-			boolean lineFull = true;
-			for (int j = 0; j < WIDTH; j++) {
-				if (board[i][j] == 0) {
-					lineFull = false;
-					break;
-				}
-			}
-			if (lineFull) {
-				for (int k = i; k > 0; k--) {
-					board[k] = Arrays.copyOf(board[k - 1], WIDTH);
-					color_board[k] = Arrays.copyOf(color_board[k-1], WIDTH);
-				}
-				Arrays.fill(board[0], 0);
-				Arrays.fill(color_board[0],Color.WHITE);
-				scores += 100;
-				lines++; // 완성된 라인 수 증가
-			}
-		}
-	}*/
 
 
 	private void checkLines() {
@@ -383,19 +361,20 @@ public class Board extends JPanel {
 
 
 		} else { // 아래로 이동할 수 없는 경우 (다른 블록에 닿거나 바닥에 닿은 경우)
-			placeBlock(); // 현재 위치에 블록을 고정시킵니다.
+			if(isAnimationDone) {
+				placeBlock();
+			}// 현재 위치에 블록을 고정시킵니다.
 			curr = nextcurr; // 다음블록을 현재 블록으로 설정합니다.
 			nextcurr = getRandomBlock(); // 새로운 블록을 무작위로 가져옵니다.
 			x = 3; // 새 블록의 x좌표를 시작 x 좌표를 설정합니다.
 			y = 0; // 새 블록의 y좌표를 시작 y 좌표를 설정합니다.
 			checkLines(); // 완성된 라인이 있는지 확인합니다.
+
+			if (isAnimationDone && !canMoveDown()) { // 새 블록이 움직일 수 없는 경우 (게임 오버)
+				GameOver();
+			}
 			if(isAnimationDone) {
 				placeBlock();
-			}
-			if (!canMoveDown()) { // 새 블록이 움직일 수 없는 경우 (게임 오버)
-				//GameOver();
-				
-
 			}
 		}
 
