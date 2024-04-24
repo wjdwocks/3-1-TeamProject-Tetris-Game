@@ -62,7 +62,7 @@ public class Main {
         System.out.println(System.getProperty("user.dir"));
         path = System.getProperty("user.dir");
 
-        try (FileReader reader = new FileReader("../Settings.json")) {
+        try (FileReader reader = new FileReader("Tetris_game/src/Settings.json")) {
             // 파일로부터 JSON 객체를 읽어오기
             SettingObject = (JSONObject) parser.parse(reader);
 

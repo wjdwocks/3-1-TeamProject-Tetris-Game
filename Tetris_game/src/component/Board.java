@@ -6,9 +6,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
+import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -51,6 +49,8 @@ public class Board extends JPanel {
 	private boolean isPaused = false; // 게임이 일시 중지되었는지 나타내는 변수
 	private JTextPane nextpane;// 넥스트블록 표시하는 판
 	private int[][] board; // 게임 보드의 상태를 나타내는 2차원 배열
+
+	private Color[][] color_board;
 	private Block curr; // 현재 움직이고 있는 블록
 	private Block nextcurr; // 다음 블럭
 
@@ -71,7 +71,7 @@ public class Board extends JPanel {
 				BorderFactory.createLineBorder(Color.DARK_GRAY, 5)); // 복합 테두리 생성
 		pane.setBorder(border); // 텍스트 패널에 테두리를 설정
 		Border innerPadding = new EmptyBorder(0, 0, 0, 0); // 상단, 왼쪽, 하단, 오른쪽 여백 설정
-		pane.setPreferredSize(new Dimension(230, 700)); // 가로 300, 세로 200의 크기로 설정
+		pane.setPreferredSize(new Dimension(210, 690)); // 가로 300, 세로 200의 크기로 설정
 
 
 		// 기존 복합 테두리와 내부 여백을 결합한 새로운 복합 테두리 생성
@@ -104,6 +104,12 @@ public class Board extends JPanel {
 
 		//Initialize board for the game.
 		board = new int[HEIGHT][WIDTH]; // 게임 보드 초기화
+		color_board = new Color[HEIGHT][WIDTH];
+		for(int i=0;i<HEIGHT;i++){
+			for(int j=0;j<WIDTH;j++){
+				color_board[i][j]=Color.white;
+			}
+		} // color_board 초기화
 		playerKeyListener = new PlayerKeyListener(); // 플레이어 키 리스너를 생성
 		addKeyListener(playerKeyListener); //키 리스너 추가
 		setFocusable(true); // 키 입력을 받을 수 있도록 설정
@@ -186,20 +192,7 @@ public class Board extends JPanel {
 		return null;
 	}
 
-	private void placeBlock() {
-		// 현재 떨어지고 있는 블록(curr)을 게임보드(board)에 배치하고, JTextPane(pane)에 해당블록의 시각적 표현을 업데이트 하는 역할
-		StyledDocument doc = pane.getStyledDocument(); // 현재 JTextPane의 스타일이 적용된 문서를 가져옵니다.
-		SimpleAttributeSet styles = new SimpleAttributeSet(); // 스타일 속성을 설정하기 위한 객체를 생성합니다.
-		StyleConstants.setForeground(styles, curr.getColor()); // 현재 블록의 색상을 스타일 속성에 설정합니다.
-		StyleConstants.setForeground(styles, nextcurr.getColor()); // 현재 블록의 색상을 스타일 속성에 설정합니다.
-		for (int j = 0; j < curr.height(); j++) {// 현재 블록의 높이만큼 반복합니다.
-			for (int i = 0; i < curr.width(); i++) {// 현재 블록의 너비만큼 반복합니다.
-				if (curr.getShape(i, j) != 0 && board[y + j][x + i] == 0) {// 보드에 0이아니면 그대로 유지해야만 함. 아니면 내려가면서 다른 블럭 지움
-					board[y + j][x + i] = curr.getShape(i, j);// 게임 보드 배열에 블록의 모양을 저장합니다.
-				}
-			}
-		}
-	}
+
 
 	private void eraseCurr() {
 		// 블록이 이동하거나 회전할 때 이전위치의 블록을 지우는 기능을 수행하는 메소드
@@ -207,6 +200,7 @@ public class Board extends JPanel {
 			for (int j = y; j < y + curr.height(); j++) {// 현재 블록의 높이만큼 반복합니다.
 				if (curr.getShape(i - x, j - y) != 0 && board[j][i] != 0) {// 현재 블록의 일부인 경우에만 발동
 					board[j][i] = 0;// 게임 보드에서 현재 블록의 위치를 0으로 설정하여 지웁니다.
+
 				}
 			}
 		}
@@ -225,8 +219,10 @@ public class Board extends JPanel {
 			if (lineFull) {
 				for (int k = i; k > 0; k--) {
 					board[k] = Arrays.copyOf(board[k - 1], WIDTH);
+					color_board[k] = Arrays.copyOf(color_board[k-1], WIDTH);
 				}
 				Arrays.fill(board[0], 0);
+				Arrays.fill(color_board[0],Color.WHITE);
 				scores += 100;
 				lines++; // 완성된 라인 수 증가
 			}
@@ -347,46 +343,22 @@ public class Board extends JPanel {
 		}
 		placeBlock(); // 게임 보드에 현재 블록의 새 위치를 표시합니다.
 	}
-
-
-	public void drawBoard() {
-		// drawBoard() 메소드는 게임 보드의 현재 상태를 JTextPane에 그리는 역할을 합니다.
-		StringBuffer sb = new StringBuffer(); // StringBuffer 객체를 생성하여 게임 보드의 상태를 문자열로 변환합니다.
-
-		// 상단 경계선을 그립니다.
-		for (int t = 0; t < WIDTH + 2; t++) sb.append(BORDER_CHAR); // 보드의 너비만큼 상단에 경계 문자(BORDER_CHAR)를 추가합니다.
-		sb.append("\n"); // 줄 바꿈을 추가하여 경계선 다음에 내용이 오도록 합니다.
-
-		// 게임 보드의 각 행을 순회합니다.
-		for (int i = 0; i < board.length; i++) {
-
-			sb.append(BORDER_CHAR); // 각 행의 시작에 경계문자(BORDER_CHAR)를 추가합니다.
-
-			// 게임 보드의 각 열을 순회합니다.
-			for (int j = 0; j < board[i].length; j++) {
-				if (board[i][j] == 1) {
-					sb.append("O"); // 블록이 있는 위치는 "O" 문자로 표시합니다.
-				} else {
-					sb.append(" "); // 블록이 없는 위치는 공백으로 표시합니다.
+	private void placeBlock() {
+		// 현재 떨어지고 있는 블록(curr)을 게임보드(board)에 배치하고, JTextPane(pane)에 해당블록의 시각적 표현을 업데이트 하는 역할
+		//StyledDocument doc = pane.getStyledDocument(); // 현재 JTextPane의 스타일이 적용된 문서를 가져옵니다.
+		//SimpleAttributeSet styles = new SimpleAttributeSet(); // 스타일 속성을 설정하기 위한 객체를 생성합니다.
+		//StyleConstants.setForeground(styles, curr.getColor()); // 현재 블록의 색상을 스타일 속성에 설정합니다.
+		//StyleConstants.setForeground(styles, nextcurr.getColor()); // 현재 블록의 색상을 스타일 속성에 설정합니다.
+		for (int j = 0; j < curr.height(); j++) {// 현재*/ 블록의 높이만큼 반복합니다.
+			for (int i = 0; i < curr.width(); i++) {// 현재 블록의 너비만큼 반복합니다.
+				if (curr.getShape(i, j) != 0 && board[y + j][x + i] == 0) {// 보드에 0이아니면 그대로 유지해야만 함. 아니면 내려가면서 다른 블럭 지움
+					board[y + j][x + i] = curr.getShape(i, j);// 게임 보드 배열에 블록의 모양을 저장합니다.
+					color_board[y+j][x+i] = curr.getColor();
 				}
 			}
-
-			sb.append(BORDER_CHAR); // 각 행의 끝에 경계문자(BORDER_CHAR)를 추가합니다.
-
-
-			sb.append("\n"); // 줄 바꿈을 추가하여 다음 행으로 넘어갑니다.
-			NextBlocknscore();// next블럭 및 점수 표시
 		}
-
-		// 하단 경계선을 그립니다.
-		for (int t = 0; t < WIDTH + 2; t++) sb.append(BORDER_CHAR); // 보드의 너비만큼 하단에 경계문자(BORDER_CHAR)를 추가합니다.
-
-		pane.setText(sb.toString()); // StringBuffer에 저장된 문자열을 JTextPane에 설정합니다.
-
-		StyledDocument doc = pane.getStyledDocument(); // JTextPane의 스타일이 적용된 문서를 가져옵니다.
-		doc.setParagraphAttributes(0, doc.getLength(), styleSet, false); // 가져온 문서에 스타일 속성을 적용합니다.
-		pane.setStyledDocument(doc); // 스타일이 적용된 문서를 다시 JTextPane에 설정
 	}
+
 
 	public void reset() {
 		// 게임 보드를 초기화합니다. 20x10 크기의 2차원 배열을 새로 생성합니다.
@@ -407,7 +379,7 @@ public class Board extends JPanel {
 		nextpane.setBorder(border); // 텍스트 패널에 테두리를 설정
 
 		Border innerPadding = new EmptyBorder(0, 0, 0, 0); // 상단, 왼쪽, 하단, 오른쪽 여백 설정
-		nextpane.setPreferredSize(new Dimension(230, 700)); // 가로 300, 세로 200의 크기로 설정
+		nextpane.setPreferredSize(new Dimension(220, 690)); // 가로 300, 세로 200의 크기로 설정
 		// 기존 복합 테두리와 내부 여백을 결합한 새로운 복합 테두리 생성
 		CompoundBorder newBorder = new CompoundBorder(border, innerPadding);
 		// 텍스트 패널에 새로운 테두리 설정
@@ -415,8 +387,114 @@ public class Board extends JPanel {
 		this.add(nextpane, BorderLayout.EAST); // 텍스트 패널을 창의 EAST에 추가.this는 Board클래스의 인스턴스를 지칭
 	}
 
-	// 다음블럭표시 및 점수부분을 담당하는 함수, drawBoard 할 때 호출됨.
+	public void drawBoard() {
+		// drawBoard() 메소드는 게임 보드의 현재 상태를 JTextPane에 그리는 역할을 합니다.
+		StyledDocument doc = pane.getStyledDocument();
+		StyleConstants.setForeground(styleSet, Color.WHITE);
+		pane.setText("");
+		// 상단 경계선을 그립니다.
+
+		try {
+			for (int t = 0; t < WIDTH + 2; t++)
+				doc.insertString(doc.getLength(), "X", styleSet);
+			doc.insertString(doc.getLength(), "\n", styleSet);
+			// 게임 보드의 각 행을 순회합니다.
+
+			for (int i = 0; i < board.length; i++) {
+				doc.insertString(doc.getLength(), "X", styleSet);
+				for (int j = 0; j < board[i].length; j++) {
+					if (board[i][j] == 1) {
+						StyleConstants.setForeground(styleSet, color_board[i][j]);
+						doc.insertString(doc.getLength(), Character.toString(" OOLEDTOXXXXXXX".charAt(board[i][j])), styleSet);
+						StyleConstants.setForeground(styleSet, Color.WHITE);
+					} else {
+						doc.insertString(doc.getLength(), " ", styleSet);
+					}
+				}
+				doc.insertString(doc.getLength(), BORDER_CHAR + "\n", styleSet);
+			}
+
+			// 하단 경계선을 그립니다.
+			for (int t = 0; t < WIDTH + 2; t++)
+				doc.insertString(doc.getLength(), "X", styleSet);// 보드의 너비만큼 하단에 경계문자(BORDER_CHAR)를 추가합니다.
+		} catch	(BadLocationException e){
+			System.out.println(e);
+		}
+
+		doc.setParagraphAttributes(0, doc.getLength(), styleSet, false); // 가져온 문서에 스타일 속성을 적용합니다.
+		pane.setStyledDocument(doc); // 스타일이 적용된 문서를 다시 JTextPane에 설정
+		NextBlocknscore();
+	}
+
 	public void NextBlocknscore() {
+		//StringBuffer nb = new StringBuffer(); // 문자열을 효율적으로 더하기 위한 StringBuffer 인스턴스 생성
+		StyledDocument doc = nextpane.getStyledDocument();
+		StyleConstants.setForeground(styleSet, Color.WHITE);
+		nextpane.setText("");
+		// 상단 경계선을 그립니다.
+
+		try {
+			doc.insertString(doc.getLength(), "NEXT", styleSet);
+			doc.insertString(doc.getLength(), "\n", styleSet);
+			doc.insertString(doc.getLength(), "\n", styleSet);
+
+
+			// 다음블럭을 처리하는 로직
+			for (int i = 0; i < 2; i++) {
+				//NEXT 블럭 표시
+				for (int k = 0; k < nextcurr.width(); k++) {
+					if (nextcurr.width() == 4 && i == 1) // "OOOO"만 너비가 4이므로 따로 처리
+						break;
+					if (nextcurr.getShape(k, i) == 1) {
+						StyleConstants.setForeground(styleSet, nextcurr.getColor());
+						doc.insertString(doc.getLength(), "O", styleSet);
+						StyleConstants.setForeground(styleSet, Color.WHITE);
+					} else doc.insertString(doc.getLength(), " ", styleSet);
+				}
+				doc.insertString(doc.getLength(), "\n", styleSet);
+			}
+
+			//공백추가
+			for (int i = 0; i < 7; i++) {
+				doc.insertString(doc.getLength(), "\n", styleSet);
+			}
+
+			String blockFormatted = String.format("%3d", bricks);
+			String linesFormatted = String.format("%3d", lines);
+			String scoresFormatted = String.format("%3d", scores);
+			String levelFormatted = String.format("%3d", level);
+
+			doc.insertString(doc.getLength(), "BLOCK : ", styleSet);
+			StyleConstants.setForeground(styleSet, Color.GREEN);
+			doc.insertString(doc.getLength(), blockFormatted + "\n\n", styleSet);
+			StyleConstants.setForeground(styleSet, Color.WHITE);
+
+			doc.insertString(doc.getLength(), "LINES : " , styleSet);
+			StyleConstants.setForeground(styleSet, Color.GREEN);
+			doc.insertString(doc.getLength(), linesFormatted + "\n\n", styleSet);
+			StyleConstants.setForeground(styleSet, Color.WHITE);
+
+			doc.insertString(doc.getLength(), "SCORE : ", styleSet);
+			StyleConstants.setForeground(styleSet, Color.GREEN);
+			doc.insertString(doc.getLength(), scoresFormatted + "\n\n", styleSet);
+			StyleConstants.setForeground(styleSet, Color.WHITE);
+
+			doc.insertString(doc.getLength(), "LEVEL : ", styleSet);
+			StyleConstants.setForeground(styleSet, Color.GREEN);
+			doc.insertString(doc.getLength(), levelFormatted + "\n\n", styleSet);
+			StyleConstants.setForeground(styleSet, Color.WHITE);
+
+		} catch(BadLocationException e)
+		{
+			System.out.println(e);
+		}
+
+		doc.setParagraphAttributes(0, doc.getLength(), styleSet, false); // 가져온 문서에 스타일 속성을 적용합니다.
+		nextpane.setStyledDocument(doc); // 스타일이 적용된 문서를 다시 JTextPane에 설정
+	}
+
+	// 다음블럭표시 및 점수부분을 담당하는 함수, drawBoard 할 때 호출됨.
+	/*public void NextBlocknscore() {
 		StringBuffer nb = new StringBuffer(); // 문자열을 효율적으로 더하기 위한 StringBuffer 인스턴스 생성
 
 		// 상단 경계선을 그립니다.
@@ -431,7 +509,8 @@ public class Board extends JPanel {
 			for (int k = 0; k < nextcurr.width(); k++) {
 				if (nextcurr.width() == 4 && i == 1) // "OOOO"만 너비가 4이므로 따로 처리
 					break;
-				if (nextcurr.getShape(k, i) == 1) nb.append("O"); // 나머지 블럭들 표시
+				if (nextcurr.getShape(k, i) == 1)
+					nb.append("O"); // 나머지 블럭들 표시
 				else nb.append(" ");
 			}
 			nb.append("\n");
@@ -453,7 +532,7 @@ public class Board extends JPanel {
 		StyledDocument doc = nextpane.getStyledDocument(); // JTextPane의 스타일이 적용된 문서를 가져옵니다.
 		doc.setParagraphAttributes(0, doc.getLength(), styleSet, false); // 가져온 문서에 스타일 속성을 적용합니다.
 		nextpane.setStyledDocument(doc); // 스타일이 적용된 문서를 다시 JTextPane에 설정
-	}
+	}*/
 
 	//일정 점수 도달하면 레벨+, 속도+, 얻는 점수+ 조정하는 함수, moveDown(), TimerAction에 호출됨
 	public void setLevel() {
