@@ -10,7 +10,7 @@ public class OptionsLabel2 extends JPanel implements KeyListener {
     private int currentIndex = 1; // 현재 선택된 메뉴 인덱스
     private final String cursorSymbol = "> "; // 현재 선택된 메뉴룰 따라갈 커서
     private final String nonSelected = "  "; // 커서가 있을 위치
-    private final String[] labels = {"Main Menu", String.format("Screen : %d x %d",  Main.SCREEN_WIDTH[1], Main.SCREEN_HEIGHT[1]), "Controls", "Score Board", "Color Blindness Mode", "Reset"}; // 메인 메뉴에 있을 서브 메뉴들.
+    private final String[] labels = {"Main Menu", String.format("Screen : %d x %d",  Main.SCREEN_WIDTH[1], Main.SCREEN_HEIGHT[1]), "Controls", "Color Blindness Mode", "Reset"}; // 메인 메뉴에 있을 서브 메뉴들.
     java.util.List<JLabel> menuItems;
     public final JLabel optionLabel2;
 
@@ -114,13 +114,9 @@ public class OptionsLabel2 extends JPanel implements KeyListener {
                 switchToScreen(Main.keyControl2);
                 break;
             case 3:
-                System.out.println("Score Board");
-                switchToScreen(Main.scoreBoard2);
-                break;
-            case 4:
                 System.out.println("Color Blindness Mode");
                 break;
-            case 5:
+            case 4:
                 System.out.println("Reset");
                 optionsReset.resetOptions(); // 변경된 옵션 초기화
                 optionsReset.applyInitialSettings(); // 초기 설정 적용
