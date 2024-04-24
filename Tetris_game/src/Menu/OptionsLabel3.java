@@ -120,6 +120,8 @@ public class OptionsLabel3 extends JPanel implements KeyListener {
                 System.out.println("Reset");
                 optionsReset.resetOptions(); // 변경된 옵션 초기화
                 optionsReset.applyInitialSettings(); // 초기 설정 적용
+                Main.frame.setSize(Main.SCREEN_WIDTH[0], Main.SCREEN_HEIGHT[0]);
+                switchToScreen(Main.optionMenu1);
                 break;
             default:
                 break;
