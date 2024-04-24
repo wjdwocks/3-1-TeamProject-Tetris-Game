@@ -49,7 +49,6 @@ public abstract class Block {
 
 	}
 
-
 	//height 메서드는 블록의 높이(세로 길이)를 반환
 	public int height() {
 		return shape.length;
