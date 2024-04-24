@@ -363,20 +363,23 @@ public class Board extends JPanel {
 		} else { // 아래로 이동할 수 없는 경우 (다른 블록에 닿거나 바닥에 닿은 경우)
 			if(isAnimationDone) {
 				placeBlock();
-			}// 현재 위치에 블록을 고정시킵니다.
-			curr = nextcurr; // 다음블록을 현재 블록으로 설정합니다.
-			nextcurr = getRandomBlock(); // 새로운 블록을 무작위로 가져옵니다.
-			x = 3; // 새 블록의 x좌표를 시작 x 좌표를 설정합니다.
-			y = 0; // 새 블록의 y좌표를 시작 y 좌표를 설정합니다.
-			checkLines(); // 완성된 라인이 있는지 확인합니다.
+				// 현재 위치에 블록을 고정시킵니다.
+				curr = nextcurr; // 다음블록을 현재 블록으로 설정합니다.
+				nextcurr = getRandomBlock(); // 새로운 블록을 무작위로 가져옵니다.
+				x = 3; // 새 블록의 x좌표를 시작 x 좌표를 설정합니다.
+				y = 0; // 새 블록의 y좌표를 시작 y 좌표를 설정합니다.
+			}
 
-			if (isAnimationDone && !canMoveDown()) { // 새 블록이 움직일 수 없는 경우 (게임 오버)
+			checkLines(); // 완성된 라인이 있는지 확인합니다.
+			if (!canMoveDown()) { // 새 블록이 움직일 수 없는 경우 (게임 오버)
 				GameOver();
 			}
 			if(isAnimationDone) {
 				placeBlock();
 			}
+
 		}
+
 
 	}
 
