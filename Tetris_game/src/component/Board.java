@@ -204,7 +204,7 @@ public class Board extends JPanel {
 			System.out.println(bricks);
 			if(bricks != 0 && bricks % 10 == 0) // 일단은 10번째마다 무게추 블록이 나오도록. 나중에 변경 예정.
 			{
-				slot = rnd.nextInt(2);
+				slot = rnd.nextInt(3);
 				if(slot == 0) {
 					curr_name = nextcurr_name;
 					nextcurr_name = "WeightBlock";
@@ -216,6 +216,14 @@ public class Board extends JPanel {
 					nextcurr_name = "BombBlock";
 					return new BombBlock();
 				}
+				else if(slot == 2) {
+					curr_name = nextcurr_name;
+					nextcurr_name = "TimeBlock";
+					return new TimeBlock();
+
+				}
+
+
 			}
 			switch (mode) {
 
@@ -485,7 +493,15 @@ public class Board extends JPanel {
 				}
 				eraseCurr();
 			}
-			if(!curr_name.equals("BombBlock")) {
+			else if (curr_name.equals("TimeBLock"))
+			{
+				placeBlock();
+				timer.stop();
+				timer.setDelay(initInterval*10);
+				timer.start();
+			}
+
+			else{
 				placeBlock(); // 현재 위치에 블록을 고정시킵니다.
 			}
 
@@ -579,10 +595,17 @@ public class Board extends JPanel {
 					if(board[i][j] == 2)
 					{
 						StyleConstants.setForeground(styleSet, color_board[i][j]);
-						doc.insertString(doc.getLength(), Character.toString(" OBLEDTOXXXXXXX".charAt(board[i][j])), styleSet);
+						doc.insertString(doc.getLength(), "B", styleSet);
 						StyleConstants.setForeground(styleSet, Color.WHITE);
 					}
-					else if (board[i][j] == 1) {
+					else if(board[i][j] == 3)
+					{
+						StyleConstants.setForeground(styleSet, color_board[i][j]);
+						doc.insertString(doc.getLength(), "T", styleSet);
+						StyleConstants.setForeground(styleSet, Color.WHITE);
+					}
+					else if(board[i][j] == 1)
+					{
 						StyleConstants.setForeground(styleSet, color_board[i][j]);
 						doc.insertString(doc.getLength(), Character.toString(" OBLEDTOXXXXXXX".charAt(board[i][j])), styleSet);
 						StyleConstants.setForeground(styleSet, Color.WHITE);
@@ -645,6 +668,11 @@ public class Board extends JPanel {
 						} else if (nextcurr.getShape(k, i) == 2) {//BombBlock
 							StyleConstants.setForeground(styleSet, nextcurr.getColor());
 							doc.insertString(doc.getLength(), "B", styleSet);
+							StyleConstants.setForeground(styleSet, Color.WHITE);
+						}
+						else if (nextcurr.getShape(k, i) == 3) {//BombBlock
+							StyleConstants.setForeground(styleSet, nextcurr.getColor());
+							doc.insertString(doc.getLength(), "T", styleSet);
 							StyleConstants.setForeground(styleSet, Color.WHITE);
 						}
 						 else doc.insertString(doc.getLength(), " ", styleSet);
@@ -1045,7 +1073,13 @@ public class Board extends JPanel {
 							}
 						}
 					}
+
 					else if(curr_name.equals("BombBlock")) {
+						while (canMoveDown()) {
+							y++;
+						}
+					}
+					else if(curr_name.equals("TimeBlock")) {
 						while (canMoveDown()) {
 							y++;
 						}
@@ -1072,6 +1106,7 @@ public class Board extends JPanel {
 						}
 						eraseCurr();
 					}
+
 					checkLines();
 					curr = nextcurr;
 					nextcurr = getRandomBlock();
