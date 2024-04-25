@@ -1055,7 +1055,7 @@ public class Board extends JPanel {
 					{
 						while (canMoveDown()) {
 							y++;
-							scores += point;
+							scores += point*2;
 						}
 					}
 					placeBlock();
