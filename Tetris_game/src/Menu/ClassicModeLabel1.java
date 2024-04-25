@@ -111,9 +111,12 @@ public class ClassicModeLabel1  extends JPanel implements KeyListener {
         switch (index) {
             case 0: // Easy
                 System.out.println("Easy Selected1");
+                Main.frame.setSize(Main.SCREEN_WIDTH[3], Main.SCREEN_HEIGHT[3]);
+                Main.gamePanel.mode = 0;
+                Main.gamePanel.GameInit();
                 switchToScreen(Main.gamePanel);
                 Main.gamePanel.timer.start();
-                Main.gamePanel.setSize(Main.SCREEN_WIDTH[0], Main.SCREEN_HEIGHT[0]);
+                // Main.gamePanel.setSize(Main.SCREEN_WIDTH[3], Main.SCREEN_HEIGHT[3]);
                 Main.gamePanel.setVisible(true);
                 Main.gamePanel.mode = 0;
 
@@ -121,18 +124,22 @@ public class ClassicModeLabel1  extends JPanel implements KeyListener {
                 break;
             case 1: // Normal
                 System.out.println("Normal Selected");
+                Main.frame.setSize(Main.SCREEN_WIDTH[3], Main.SCREEN_HEIGHT[3]);
+                Main.gamePanel.mode = 1;
                 switchToScreen(Main.gamePanel);
                 Main.gamePanel.timer.start();
-                Main.gamePanel.setSize(Main.SCREEN_WIDTH[0], Main.SCREEN_HEIGHT[0]);
+                // Main.gamePanel.setSize(Main.SCREEN_WIDTH[0], Main.SCREEN_HEIGHT[0]);
                 Main.gamePanel.setVisible(true);
                 Main.gamePanel.mode = 1;
                 // 여기서 다음 화면으로 넘어가는 로직을 구현
                 break;
             case 2: // Hard
                 System.out.println("Hard Selected");
+                Main.frame.setSize(Main.SCREEN_WIDTH[3], Main.SCREEN_HEIGHT[3]);
+                Main.gamePanel.mode = 2;
                 switchToScreen(Main.gamePanel);
                 Main.gamePanel.timer.start();
-                Main.gamePanel.setSize(Main.SCREEN_WIDTH[0], Main.SCREEN_HEIGHT[0]);
+                // Main.gamePanel.setSize(Main.SCREEN_WIDTH[0], Main.SCREEN_HEIGHT[0]);
                 Main.gamePanel.setVisible(true);
                 Main.gamePanel.mode = 2;
                 // 여기서 다음 화면으로 넘어가는 로직을 구현

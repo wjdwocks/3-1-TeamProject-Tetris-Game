@@ -8,17 +8,20 @@ import java.awt.*;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 
 
 public class Main {
     public static JFrame frame;
+
     public static JPanel mainPanel;
     public static CardLayout cardLayout;
-    public static final int SCREEN_WIDTH[] = {1280, 1024, 960};
-    public static final int SCREEN_HEIGHT[] = {720, 576, 540};
+    public static final int SCREEN_WIDTH[] = {1280, 1024, 960, 460};
+    public static final int SCREEN_HEIGHT[] = {720, 576, 540, 740};
     public static MainMenuLabel1 mainMenu1;
     public static OptionsLabel1 optionMenu1;
     public static MainMenuLabel2 mainMenu2;
@@ -52,6 +55,9 @@ public class Main {
     public static JSONParser parser;
     public static JSONObject SettingObject;
 
+    public static boolean isColorBlindnessMode; // 색맹 모드 상태 저장
+
+
     public static boolean isInputing = false; // 사용자가 키값을 바꾸려고 할 때인가?
     public static String currentChangingKey = "";
     public static String path;
@@ -62,7 +68,7 @@ public class Main {
         System.out.println(System.getProperty("user.dir"));
         path = System.getProperty("user.dir");
 
-        try (FileReader reader = new FileReader("../Settings.json")) {
+        try (FileReader reader = new FileReader("Tetris_game/src/Settings.json")) {
             // 파일로부터 JSON 객체를 읽어오기
             SettingObject = (JSONObject) parser.parse(reader);
 
@@ -72,6 +78,14 @@ public class Main {
             System.out.println("K_DOWN : " + SettingObject.get("K_DOWN"));
             System.out.println("K_LEFT : " + SettingObject.get("K_LEFT"));
             System.out.println("K_RIGHT : " + SettingObject.get("K_RIGHT"));
+            System.out.println("color_blind : " + SettingObject.get("color_blind"));
+
+            // "color_blind" 값 읽기
+            isColorBlindnessMode = (Boolean) SettingObject.get("color_blind");
+            Board.colorBlindMode = isColorBlindnessMode;
+            if(Board.colorBlindMode) {Board.setColorBlindMode(true);}
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -124,9 +138,9 @@ public class Main {
         itemMode3 = new ItemModeLabel3();
         itemMode3.setName("ItemMode3");
 
+        
         gamePanel = new Board();
-        //gamePanel.mode = 2;
-        gamePanel.setSize(SCREEN_WIDTH[0], SCREEN_HEIGHT[0]);
+        gamePanel.setSize(SCREEN_WIDTH[3], SCREEN_HEIGHT[3]);
         gamePanel.setVisible(true);
         gamePanel.setName("game");
 
@@ -189,7 +203,7 @@ public class Main {
         frame.setVisible(true);
 
         // 밑에는 EXIT버튼이 아니라 종료버튼을 눌러서 나갔을 때 저장되게
-        try (FileWriter file = new FileWriter("../Settings.json")) {
+        try (FileWriter file = new FileWriter("Tetris_game/src/Settings.json")) {
             file.write(SettingObject.toJSONString());
             file.flush();
         } catch (Exception e) {
