@@ -623,14 +623,32 @@ public class Board extends JPanel {
 			// 다음블럭을 처리하는 로직
 			for (int i = 0; i < 2; i++) {
 				//NEXT 블럭 표시
-				for (int k = 0; k < nextcurr.width(); k++) {
-					if (nextcurr.width() == 4 && i == 1) // "OOOO"만 너비가 4이므로 따로 처리
-						break;
-					if (nextcurr.getShape(k, i) == 1) {
-						StyleConstants.setForeground(styleSet, nextcurr.getColor());
-						doc.insertString(doc.getLength(), "O", styleSet);
-						StyleConstants.setForeground(styleSet, Color.WHITE);
-					} else doc.insertString(doc.getLength(), " ", styleSet);
+
+				if(nextcurr_name == "WeightBlock")// WeightBlock
+				{
+					for (int k = 0; k < nextcurr.width(); k++) {
+						if (nextcurr.getShape(k, i) == 1 ) {
+							doc.insertString(doc.getLength(), "O", styleSet);
+						}
+						else doc.insertString(doc.getLength(), " ", styleSet);
+					}
+				}
+				else {
+					for (int k = 0; k < nextcurr.width(); k++) {
+						if (nextcurr.width() == 4 && i == 1) // "OOOO"만 너비가 4이므로 따로 처리
+							break;
+						if (nextcurr.getShape(k, i) == 1) {
+							StyleConstants.setForeground(styleSet, nextcurr.getColor());
+							doc.insertString(doc.getLength(), "O", styleSet);
+							StyleConstants.setForeground(styleSet, Color.WHITE);
+
+						} else if (nextcurr.getShape(k, i) == 2) {//BombBlock
+							StyleConstants.setForeground(styleSet, nextcurr.getColor());
+							doc.insertString(doc.getLength(), "B", styleSet);
+							StyleConstants.setForeground(styleSet, Color.WHITE);
+						}
+						 else doc.insertString(doc.getLength(), " ", styleSet);
+					}
 				}
 				doc.insertString(doc.getLength(), "\n", styleSet);
 			}
