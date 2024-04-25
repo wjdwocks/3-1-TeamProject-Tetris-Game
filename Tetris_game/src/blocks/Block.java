@@ -1,5 +1,7 @@
 package blocks;
 
+import component.Board;
+
 import java.awt.Color;
 
 //색상을 다루기 위한 기능 사용
@@ -9,6 +11,9 @@ public abstract class Block {
 		
 	protected int[][] shape; //테트리스 블록의 형태를 나타냄. 예를 들어, 2x2 크기의 정사각형 블록은 {{1,1}, {1,1}}
 	protected Color color; // 블록의 색상 저장하는 color객체
+	// 색맹 모드 상태
+
+
 
 
 	//생성자 Block, 모든 블록의 기본 형태와 색상을 초기화, 2x2형태, 노란색으로 설정
@@ -17,7 +22,14 @@ public abstract class Block {
 				{1, 1}, 
 				{1, 1}
 		};
-		color = Color.YELLOW;
+		// 색맹 모드에 따라 색상 설정
+		if (Board.colorBlindMode) {
+			color = Color.yellow;
+		} else {
+			color = Color.yellow;
+		}
+
+
 	}
 
 	//getShape 메서드는 주어진 좌표에 해당하는 블록의 형태 값을 반환

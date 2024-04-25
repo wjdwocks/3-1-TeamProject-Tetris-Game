@@ -1,10 +1,15 @@
 package Menu;
 
+import blocks.Block;
+import component.Board;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.*;
+
+import static Menu.Main.isColorBlindnessMode;
 
 public class OptionsLabel1 extends JPanel implements KeyListener {
     private int currentIndex = 0; // 현재 선택된 메뉴 인덱스
@@ -13,6 +18,7 @@ public class OptionsLabel1 extends JPanel implements KeyListener {
     private final String[] labels = {"Main Menu", String.format("Screen : %d x %d",  Main.SCREEN_WIDTH[0], Main.SCREEN_HEIGHT[0]), "Controls", "Color Blindness Mode", "Reset"}; // 메인 메뉴에 있을 서브 메뉴들.
     java.util.List<JLabel> menuItems;
     public final JLabel optionLabel1;
+
 
     private OptionsReset optionsReset;
 
@@ -114,7 +120,10 @@ public class OptionsLabel1 extends JPanel implements KeyListener {
                 switchToScreen(Main.keyControl1);
                 break;
             case 3:
-                System.out.println("Color Blindness Mode");
+                isColorBlindnessMode = !isColorBlindnessMode; // 색맹 모드 토글
+                // isColorBlindnessMode = isColorBlindnessMode; // 상태 저장
+                System.out.println("Color Blindness Mode: " + (isColorBlindnessMode ? "Enabled" : "Disabled"));
+                Board.setColorBlindMode(isColorBlindnessMode);
                 break;
             case 4:
                 System.out.println("Reset");
@@ -124,6 +133,7 @@ public class OptionsLabel1 extends JPanel implements KeyListener {
                 break;
         }
     }
+
 
     private void addMenuItem(String text, int y) {
         JLabel menuItem = new JLabel(text);

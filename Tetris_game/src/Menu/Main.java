@@ -8,9 +8,11 @@ import java.awt.*;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 
 
 public class Main {
@@ -53,6 +55,9 @@ public class Main {
     public static JSONParser parser;
     public static JSONObject SettingObject;
 
+    public static boolean isColorBlindnessMode; // 색맹 모드 상태 저장
+
+
     public static boolean isInputing = false; // 사용자가 키값을 바꾸려고 할 때인가?
     public static String currentChangingKey = "";
     public static String path;
@@ -73,6 +78,14 @@ public class Main {
             System.out.println("K_DOWN : " + SettingObject.get("K_DOWN"));
             System.out.println("K_LEFT : " + SettingObject.get("K_LEFT"));
             System.out.println("K_RIGHT : " + SettingObject.get("K_RIGHT"));
+            System.out.println("color_blind : " + SettingObject.get("color_blind"));
+
+            // "color_blind" 값 읽기
+            isColorBlindnessMode = (Boolean) SettingObject.get("color_blind");
+            Board.colorBlindMode = isColorBlindnessMode;
+            if(Board.colorBlindMode) {Board.setColorBlindMode(true);}
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -125,8 +138,8 @@ public class Main {
         itemMode3 = new ItemModeLabel3();
         itemMode3.setName("ItemMode3");
 
+        
         gamePanel = new Board();
-        //gamePanel.mode = 2;
         gamePanel.setSize(SCREEN_WIDTH[3], SCREEN_HEIGHT[3]);
         gamePanel.setVisible(true);
         gamePanel.setName("game");
@@ -190,7 +203,7 @@ public class Main {
         frame.setVisible(true);
 
         // 밑에는 EXIT버튼이 아니라 종료버튼을 눌러서 나갔을 때 저장되게
-        try (FileWriter file = new FileWriter("../Settings.json")) {
+        try (FileWriter file = new FileWriter("Tetris_game/src/Settings.json")) {
             file.write(SettingObject.toJSONString());
             file.flush();
         } catch (Exception e) {

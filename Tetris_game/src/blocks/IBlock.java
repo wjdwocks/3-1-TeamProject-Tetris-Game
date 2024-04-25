@@ -1,5 +1,7 @@
 package blocks;
 
+import component.Board;
+
 import java.awt.Color;
 
 
@@ -13,6 +15,10 @@ public class IBlock extends Block {
 		shape = new int[][] { 
 			{1, 1, 1, 1}
 		};
-		color = Color.CYAN;
+		if (Board.colorBlindMode) {
+			color = new Color(255, 128, 128);
+		} else {
+			color = Color.cyan;
+		}
 	}
 }
