@@ -125,6 +125,7 @@ public class Board extends JPanel {
 		//Create the first block and draw.
 		curr = getRandomBlock(); // 첫 번째 블록을 무작위로 선택
 		bricks--;
+
 		nextcurr = getRandomBlock(); // 다음 블록을 무작위로 선택
 
 		placeBlock(); //  선택된 블록을 배치합니다.
@@ -771,6 +772,7 @@ public class Board extends JPanel {
 		isPaused = false; // 게임이 일시 중지되었는지 나타내는 변수
 		curr =  getRandomBlock();// 현재 움직이고 있는 블록
 		bricks--;
+		timer.setDelay(10);
 		nextcurr = getRandomBlock(); // 다음 블럭
 		gameOver = false; // 게임오버를 알려주는변수 true == 게임오버
 
@@ -1065,8 +1067,4 @@ public class Board extends JPanel {
 			// 키가 떼어졌을 때의 동작을 정의할 수 있으나, 여기서는 사용하지 않습니다.
 		}
 	}
-
-
-
-
 }
