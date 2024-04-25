@@ -11,7 +11,7 @@ public class MainMenuLabel2 extends JPanel implements KeyListener {
     private int currentIndex = 1; // 현재 선택된 메뉴 인덱스
     private final String cursorSymbol = "> "; // 현재 선택된 메뉴룰 따라갈 커서
     private final String nonSelected = "  "; // 커서가 있을 위치
-    private final String[] labels = {"Start", "Settings", "Exit"}; // 메인 메뉴에 있을 서브 메뉴들.
+    private final String[] labels = {"Start", "Settings", "ScoreBoard", "Exit"}; // 메인 메뉴에 있을 서브 메뉴들.
     java.util.List<JLabel> menuItems;
     public final JLabel mainLabel;
     private JLabel keyMessage;
@@ -106,7 +106,11 @@ public class MainMenuLabel2 extends JPanel implements KeyListener {
                 switchToScreen(Main.optionMenu2);
                 // 설정 화면 로직 구현
                 break;
-            case 2: // Exits
+            case 2:
+                System.out.println("ScoreBoard Selected");
+                switchToScreen(Main.normalscoreBoard2);
+                break;
+            case 3: // Exits
                 System.out.println("Exit Selected");
                 try (FileWriter file = new FileWriter("Tetris_game/src/Settings.json")) {
                     file.write(Main.SettingObject.toJSONString());

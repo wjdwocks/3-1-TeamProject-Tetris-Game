@@ -15,10 +15,11 @@ import java.io.IOException;
 
 public class Main {
     public static JFrame frame;
+
     public static JPanel mainPanel;
     public static CardLayout cardLayout;
-    public static final int SCREEN_WIDTH[] = {1280, 1024, 960};
-    public static final int SCREEN_HEIGHT[] = {720, 576, 540};
+    public static final int SCREEN_WIDTH[] = {1280, 1024, 960, 460};
+    public static final int SCREEN_HEIGHT[] = {720, 576, 540, 740};
     public static MainMenuLabel1 mainMenu1;
     public static OptionsLabel1 optionMenu1;
     public static MainMenuLabel2 mainMenu2;
@@ -41,9 +42,11 @@ public class Main {
     public static KeyControl1 keyControl1;
     public static KeyControl2 keyControl2;
     public static KeyControl3 keyControl3;
-    public static ScoreBoard1 scoreBoard1;
-    public static ScoreBoard2 scoreBoard2;
-    public static ScoreBoard3 scoreBoard3;
+    public static ClassicScoreBoard1 classicScoreBoard1;
+    public static ItemScoreBoard1 itemScoreBoard1;
+    public static ClassicScoreBoard2 normalscoreBoard2;
+    public static ClassicScoreBoard3 classicScoreBoard3;
+    public static ScoreBoardMenu1 scoreBoardMenu1;
 
 
     /////////////////////////////설정값들 관리.
@@ -52,12 +55,13 @@ public class Main {
 
     public static boolean isInputing = false; // 사용자가 키값을 바꾸려고 할 때인가?
     public static String currentChangingKey = "";
+    public static String path;
 
     public static void main(String[] args) throws IOException {
         parser = new JSONParser();
         System.out.println();
-
         System.out.println(System.getProperty("user.dir"));
+        path = System.getProperty("user.dir");
 
         try (FileReader reader = new FileReader("Tetris_game/src/Settings.json")) {
             // 파일로부터 JSON 객체를 읽어오기
@@ -123,7 +127,7 @@ public class Main {
 
         gamePanel = new Board();
         //gamePanel.mode = 2;
-        gamePanel.setSize(SCREEN_WIDTH[0], SCREEN_HEIGHT[0]);
+        gamePanel.setSize(SCREEN_WIDTH[3], SCREEN_HEIGHT[3]);
         gamePanel.setVisible(true);
         gamePanel.setName("game");
 
@@ -134,12 +138,18 @@ public class Main {
         keyControl3 = new KeyControl3();
         keyControl3.setName("Control3");
 
-        scoreBoard1 = new ScoreBoard1();
-        scoreBoard1.setName("ScoreBoard1");
-        scoreBoard2 = new ScoreBoard2();
-        scoreBoard2.setName("ScoreBoard2");
-        scoreBoard3 = new ScoreBoard3();
-        scoreBoard3.setName("ScoreBoard3");
+        classicScoreBoard1 = new ClassicScoreBoard1();
+        classicScoreBoard1.setName("NormalScoreBoard1");
+        normalscoreBoard2 = new ClassicScoreBoard2();
+        normalscoreBoard2.setName("NormalScoreBoard2");
+        classicScoreBoard3 = new ClassicScoreBoard3();
+        classicScoreBoard3.setName("NormalScoreBoard3");
+
+        itemScoreBoard1 = new ItemScoreBoard1();
+        itemScoreBoard1.setName("ItemScoreBoard1");
+
+        scoreBoardMenu1 = new ScoreBoardMenu1();
+        scoreBoardMenu1.setName("ScoreBoardMenu1");
 
         mainPanel.add(mainMenu1, "MainMenu1");
         mainPanel.add(optionMenu1, "Options1");
@@ -166,9 +176,13 @@ public class Main {
         mainPanel.add(keyControl2, "Control2");
         mainPanel.add(keyControl3, "Control3");
 
-        mainPanel.add(scoreBoard1, "ScoreBoard1");
-        mainPanel.add(scoreBoard2, "ScoreBoard2");
-        mainPanel.add(scoreBoard3, "ScoreBoard3");
+        mainPanel.add(classicScoreBoard1, "NormalScoreBoard1");
+        mainPanel.add(normalscoreBoard2, "NormalScoreBoard2");
+        mainPanel.add(classicScoreBoard3, "NormalScoreBoard3");
+
+        mainPanel.add(itemScoreBoard1, "ItemScoreBoard1");
+
+        mainPanel.add(scoreBoardMenu1, "ScoreBoardMenu1");
 
         cardLayout.show(mainPanel, "MainMenu1");
 
@@ -176,7 +190,7 @@ public class Main {
         frame.setVisible(true);
 
         // 밑에는 EXIT버튼이 아니라 종료버튼을 눌러서 나갔을 때 저장되게
-        try (FileWriter file = new FileWriter("Tetris_game/src/Settings.json")) {
+        try (FileWriter file = new FileWriter("../Settings.json")) {
             file.write(SettingObject.toJSONString());
             file.flush();
         } catch (Exception e) {
