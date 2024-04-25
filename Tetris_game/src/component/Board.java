@@ -63,9 +63,6 @@ public class Board extends JPanel {
 	public int mode = 1; // 난이도 설정 easy == 0, normal == 1, hard == 2;
 	public int item = 0; // itemMode 0 == false(보통모드), 1 == true(아이템모드);
 	public boolean gameOver = false; // 게임오버를 알려주는변수 true == 게임오버
-	private Timer timers = null;
-
-	private boolean isAnimationDone = true; // 새로운 멤버 변수 추가
 
 	public boolean weightblockLock = false;
 
@@ -334,7 +331,6 @@ public class Board extends JPanel {
 	}
 
 
-
 	private void checkLines() {
 		for (int i = HEIGHT - 1; i >= 0; i--) {
 			boolean lineFull = true;
@@ -357,52 +353,6 @@ public class Board extends JPanel {
 			}
 		}
 	}
-
-
-	/*private void animateAndDeleteLines(ArrayList<Integer> a) {
-
-		final int[] count = {0};
-		isAnimationDone = false;
-		timers = new Timer(50, new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// isAnimationDone이 false일 때만 실행
-					if (count[0] < 4) { // 1초 동안 총 6번의 변경 (5번의 빨간색/흰색 전환)
-						for (int line : a) {
-							Color color = (count[0] % 2 == 0) ? Color.RED : Color.WHITE;
-							Arrays.fill(color_board[line], color);
-						}
-
-						drawBoard(); // 보드 다시 그리기
-						count[0]++;
-					} else {
-						timers.stop();
-						// 애니메이션이 끝나면 실제로 줄을 삭제
-						for (int line : a) {
-							for (int k = line; k > 0; k--) {
-								board[k] = Arrays.copyOf(board[k - 1], WIDTH);
-								color_board[k] = Arrays.copyOf(color_board[k-1], WIDTH);
-							}
-						}
-
-						Arrays.fill(board[0], 0);
-						Arrays.fill(color_board[0], Color.WHITE);
-						drawBoard();
-
-
-						scores += 100 * a.size();
-						lines += a.size(); // 완성된 라인 수 증가
-						isAnimationDone = true; // 애니메이션 완료 후 true로 설정
-						timer.start();
-
-					}
-			}
-		});
-		if(!isAnimationDone)
-			timers.start();
-
-	}*/
-
 
 
 	// 현재 블록을 아래로 이동할 수 있는지 확인하는 메소드
