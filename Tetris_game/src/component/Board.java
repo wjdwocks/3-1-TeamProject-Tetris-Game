@@ -48,6 +48,8 @@ public class Board extends JPanel {
 	String name;
 
 	private boolean isPaused = false; // 게임이 일시 중지되었는지 나타내는 변수
+	public static boolean colorBlindMode; // 색맹모드
+
 	private JTextPane nextpane;// 넥스트블록 표시하는 판
 	private int[][] board; // 게임 보드의 상태를 나타내는 2차원 배열
 
@@ -66,6 +68,7 @@ public class Board extends JPanel {
 
 	// 생성자 Board, 게임 창 설정 및 초기게임 보드 준비, 첫 번째 블록 생성하고, 타이머 시작
 	public Board() {
+		this.colorBlindMode = Main.isColorBlindnessMode;
 		//Board display setting.
 		pane = new JTextPane(); // 텍스트 패널 생성
 		pane.setEditable(false); // 텍스트 패널 편집 불가하도록 설정
@@ -81,6 +84,8 @@ public class Board extends JPanel {
 		// 기존 복합 테두리와 내부 여백을 결합한 새로운 복합 테두리 생성
 		CompoundBorder newBorder = new CompoundBorder(border, innerPadding);
 
+
+
 		// 텍스트 패널에 새로운 테두리 설정
 		pane.setBorder(newBorder);
 		this.add(pane, BorderLayout.WEST); // 텍스트 패널을 창의 west에 추가.this는 Board클래스의 인스턴스를 지칭
@@ -92,9 +97,8 @@ public class Board extends JPanel {
 		StyleConstants.setFontFamily(styleSet, "consolas");// 폰트 종류를 mac은 Courier로 설정, window는 consolas로 설정
 		StyleConstants.setBold(styleSet, true); // 폰트를 굵게 설정
 		StyleConstants.setForeground(styleSet, Color.WHITE); // 폰트 색상을 흰색으로 설정
-
-
 		StyleConstants.setAlignment(styleSet, StyleConstants.ALIGN_CENTER); // 텍스트 정렬을 가운데로 설정
+
 
 		//Set timer for block drops.
 		timer = new Timer(initInterval, new ActionListener() {
@@ -484,6 +488,8 @@ public class Board extends JPanel {
 		nextpane.setText("");
 		// 상단 경계선을 그립니다.
 
+		if(colorBlindMode) {setColorBlindMode(true);}
+
 		try {
 			doc.insertString(doc.getLength(), "NEXT", styleSet);
 			doc.insertString(doc.getLength(), "\n", styleSet);
@@ -516,22 +522,34 @@ public class Board extends JPanel {
 			String levelFormatted = String.format("%3d", level);
 
 			doc.insertString(doc.getLength(), "BLOCK : ", styleSet);
-			StyleConstants.setForeground(styleSet, Color.GREEN);
+			if (colorBlindMode) {
+				StyleConstants.setForeground(styleSet, Color.PINK);
+			} else {
+				StyleConstants.setForeground(styleSet, Color.GREEN);}
 			doc.insertString(doc.getLength(), blockFormatted + "\n\n", styleSet);
 			StyleConstants.setForeground(styleSet, Color.WHITE);
 
 			doc.insertString(doc.getLength(), "LINES : " , styleSet);
-			StyleConstants.setForeground(styleSet, Color.GREEN);
+			if (colorBlindMode) {
+				StyleConstants.setForeground(styleSet, Color.PINK);
+			} else {
+				StyleConstants.setForeground(styleSet, Color.GREEN);}
 			doc.insertString(doc.getLength(), linesFormatted + "\n\n", styleSet);
 			StyleConstants.setForeground(styleSet, Color.WHITE);
 
 			doc.insertString(doc.getLength(), "SCORE : ", styleSet);
-			StyleConstants.setForeground(styleSet, Color.GREEN);
+			if (colorBlindMode) {
+				StyleConstants.setForeground(styleSet, Color.PINK);
+			} else {
+				StyleConstants.setForeground(styleSet, Color.GREEN);}
 			doc.insertString(doc.getLength(), scoresFormatted + "\n\n", styleSet);
 			StyleConstants.setForeground(styleSet, Color.WHITE);
 
 			doc.insertString(doc.getLength(), "LEVEL : ", styleSet);
-			StyleConstants.setForeground(styleSet, Color.GREEN);
+			if (colorBlindMode) {
+				StyleConstants.setForeground(styleSet, Color.PINK);
+			} else {
+				StyleConstants.setForeground(styleSet, Color.GREEN);}
 			doc.insertString(doc.getLength(), levelFormatted + "\n\n", styleSet);
 			StyleConstants.setForeground(styleSet, Color.WHITE);
 
@@ -583,9 +601,19 @@ public class Board extends JPanel {
 		}
 	}
 
+	// 색맹 모드 설정
+	public static void setColorBlindMode(boolean A) {
+		colorBlindMode = A;
+	}
+
 	public void GameInit(){
 		initInterval = 1000; //블록이 자동으로 아래로 떨어지는 속도 제어 시간, 현재 1초
 		timer.setDelay(initInterval);
+
+		if (colorBlindMode) {
+			StyleConstants.setForeground(styleSet, Color.PINK);
+		} else {
+			StyleConstants.setForeground(styleSet, Color.GREEN);}
 
 		x = 3; //Default Position. 현재 블록 위치
 		y = 0; // 현재 블록 위치

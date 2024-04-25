@@ -113,6 +113,7 @@ public class ClassicModeLabel1  extends JPanel implements KeyListener {
                 System.out.println("Easy Selected1");
                 Main.frame.setSize(Main.SCREEN_WIDTH[3], Main.SCREEN_HEIGHT[3]);
                 Main.gamePanel.mode = 0;
+                Main.gamePanel.GameInit();
                 switchToScreen(Main.gamePanel);
                 Main.gamePanel.timer.start();
                 // Main.gamePanel.setSize(Main.SCREEN_WIDTH[3], Main.SCREEN_HEIGHT[3]);

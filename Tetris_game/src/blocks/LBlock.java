@@ -1,5 +1,7 @@
 package blocks;
 
+import component.Board;
+
 import java.awt.Color;
 
 public class LBlock extends Block {
@@ -11,6 +13,10 @@ public class LBlock extends Block {
 			{1, 1, 1},
 			{1, 0, 0}
 		};
-		color = Color.ORANGE;
+		if (Board.colorBlindMode) {
+			color = new Color(255, 128, 0);
+		} else {
+			color = Color.ORANGE;
+		}
 	}
 }
