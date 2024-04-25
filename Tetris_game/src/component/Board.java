@@ -622,6 +622,7 @@ public class Board extends JPanel {
 		timer.stop(); // 타이머를 멈춥니다.
 		gameOver = true;
 		Main.normalScoreBoard1.update();
+		Main.frame.setSize(Main.SCREEN_WIDTH[0], Main.SCREEN_HEIGHT[0]);
 		switchToScreen(Main.normalScoreBoard1);
 		int response = JOptionPane.showConfirmDialog(this, "점수를 저장하시겠습니까?", "Game Over", JOptionPane.YES_NO_OPTION);
 
@@ -674,22 +675,40 @@ public class Board extends JPanel {
 			} else // 빈칸을 입력했거나, 이름입력대화상자에서 취소 눌렀을 때
 			{
 				if(Main.SettingObject.get("Screen").toString().equals("1280")) // mainmenu 1으로
+				{
+					Main.frame.setSize(Main.SCREEN_WIDTH[0], Main.SCREEN_HEIGHT[0]);
 					switchToScreen(Main.mainMenu1);
+				}
 				else if(Main.SettingObject.get("Screen").toString().equals("1024")) // mainmenu 2로
+				{
+					Main.frame.setSize(Main.SCREEN_WIDTH[1], Main.SCREEN_HEIGHT[1]);
 					switchToScreen(Main.mainMenu2);
+				}
 				else if(Main.SettingObject.get("Screen").toString().equals("960"))// mainmenu 3으로
+				{
+					Main.frame.setSize(Main.SCREEN_WIDTH[2], Main.SCREEN_HEIGHT[2]);
 					switchToScreen(Main.mainMenu3);
+				}
 				else
 					System.out.println("에러 발생.");
 			}
 
 		} else if (response == JOptionPane.NO_OPTION || response == JOptionPane.CLOSED_OPTION) { //점수 저장하시겠습니까? -> No일 때
-			if ( Main.SettingObject.get("Screen").toString().equals("1280")) // mainmenu 1으로
+			if(Main.SettingObject.get("Screen").toString().equals("1280")) // mainmenu 1으로
+			{
+				Main.frame.setSize(Main.SCREEN_WIDTH[0], Main.SCREEN_HEIGHT[0]);
 				switchToScreen(Main.mainMenu1);
-			else if (Main.SettingObject.get("Screen").toString().equals("1024")) // mainmenu 2로
+			}
+			else if(Main.SettingObject.get("Screen").toString().equals("1024")) // mainmenu 2로
+			{
+				Main.frame.setSize(Main.SCREEN_WIDTH[1], Main.SCREEN_HEIGHT[1]);
 				switchToScreen(Main.mainMenu2);
-			else if (Main.SettingObject.get("Screen").toString().equals("960")) // mainmenu 3으로
+			}
+			else if(Main.SettingObject.get("Screen").toString().equals("960"))// mainmenu 3으로
+			{
+				Main.frame.setSize(Main.SCREEN_WIDTH[2], Main.SCREEN_HEIGHT[2]);
 				switchToScreen(Main.mainMenu3);
+			}
 			else {
 				System.out.println("에러 발생.");
 				System.out.println(Main.SettingObject.get("Screen"));
