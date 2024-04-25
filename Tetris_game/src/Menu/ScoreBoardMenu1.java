@@ -99,8 +99,8 @@ public class ScoreBoardMenu1 extends JPanel implements KeyListener {
         switch (index) {
             case 0: // Start
                 System.out.println("Normal Mode ScoreBoard");
-                Main.normalScoreBoard1.update();
-                switchToScreen(Main.normalScoreBoard1);
+                Main.classicScoreBoard1.update();
+                switchToScreen(Main.classicScoreBoard1);
 
 
                 break;

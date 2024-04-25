@@ -109,7 +109,7 @@ public class ItemScoreBoard1 extends JPanel implements KeyListener {
         this.setVisible(true);
     }
 
-    void update()
+    public void update()
     {
         this.removeAll();
 
