@@ -24,7 +24,7 @@ public class ClassicScoreBoard1 extends JPanel implements KeyListener {
     public ClassicScoreBoard1() {
         this.setSize(Main.SCREEN_WIDTH[0], Main.SCREEN_HEIGHT[0]);
         this.setLayout(new BorderLayout());
-        JLabel title = new JLabel("Normal Score Board");
+        JLabel title = new JLabel(String.format("\n") + "Classic Score Board");// "<html>Invalid Key Input. <br>If you want to exit, Press Enter</html>"
         title.setFont(new Font("Arial", 1, Main.SCREEN_WIDTH[0] / 40));
         title.setForeground(Color.BLACK);
         title.setBounds(Main.SCREEN_WIDTH[0] / 2 - 200, Main.SCREEN_HEIGHT[0] / 20, 400, 50);
@@ -67,7 +67,7 @@ public class ClassicScoreBoard1 extends JPanel implements KeyListener {
 
         scoreTable = new JPanel(new GridLayout(sortedScoreArray.size() + 1, 5, 50, 20));
         scoreTable.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        this.add(scoreTable, BorderLayout.SOUTH);
+        this.add(scoreTable, BorderLayout.CENTER);
         // 컬럼 헤더 추가
         String[] columnNames = {"Rank", "Name", "Mode", "Difficulty" ,"Score"};
         for (String columnName : columnNames) {

@@ -496,6 +496,7 @@ public class Board extends JPanel {
 				for(int i=0;i<4;++i) {
 					board[y+1][x+i] = 0;
 				}
+				placeBlock();
 			}
 			else {
 				placeBlock(); // 현재 위치에 블록을 고정시킵니다.
@@ -523,7 +524,7 @@ public class Board extends JPanel {
 				{
 					for(int j= -1;j<3;++j)
 					{
-						if(y+j < 0 || y + j > 19 || x+i <0 || x+i > 9)
+						if(y + j < 0 || y + j > 19 || x+i <0 || x+i > 9)
 							continue;
 						board[y+j][x+i] = 0;
 					}
