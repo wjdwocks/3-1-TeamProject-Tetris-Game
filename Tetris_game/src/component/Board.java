@@ -321,8 +321,6 @@ public class Board extends JPanel {
 	}
 
 
-
-
 	private void eraseCurr() {
 		// 블록이 이동하거나 회전할 때 이전위치의 블록을 지우는 기능을 수행하는 메소드
 		for (int i = x; i < x + curr.width(); i++) {// 현재 블록의 너비만큼 반복합니다.
@@ -338,8 +336,6 @@ public class Board extends JPanel {
 
 
 	private void checkLines() {
-		ArrayList<Integer> fullLines = new ArrayList<>();
-
 		for (int i = HEIGHT - 1; i >= 0; i--) {
 			boolean lineFull = true;
 			for (int j = 0; j < WIDTH; j++) {
@@ -349,17 +345,21 @@ public class Board extends JPanel {
 				}
 			}
 			if (lineFull) {
-				fullLines.add(i);
+				for (int k = i; k > 0; k--) {
+					board[k] = Arrays.copyOf(board[k - 1], WIDTH);
+					color_board[k] = Arrays.copyOf(color_board[k - 1], WIDTH);
+				}
+				Arrays.fill(board[0], 0);
+				Arrays.fill(color_board[0], Color.WHITE);
+				scores += 100;
+				lines++; // 완성된 라인 수 증가
+				i++; // 줄을 지운 후, 같은 줄을 다시 검사하기 위해 i 값을 증가시킵니다.
 			}
-		}
-
-		if (!fullLines.isEmpty()) {
-			timer.stop();
-			animateAndDeleteLines(fullLines);
 		}
 	}
 
-	private void animateAndDeleteLines(ArrayList<Integer> a) {
+
+	/*private void animateAndDeleteLines(ArrayList<Integer> a) {
 
 		final int[] count = {0};
 		isAnimationDone = false;
@@ -401,7 +401,7 @@ public class Board extends JPanel {
 		if(!isAnimationDone)
 			timers.start();
 
-	}
+	}*/
 
 
 
@@ -535,7 +535,7 @@ public class Board extends JPanel {
 				}
 				eraseCurr();
 			}
-			if(!curr_name.equals("BombBlock") && isAnimationDone) {
+			if(!curr_name.equals("BombBlock")) {
 				placeBlock(); // 현재 위치에 블록을 고정시킵니다.
 			}
 
@@ -548,9 +548,8 @@ public class Board extends JPanel {
 			if (!canMoveDown()) { // 새 블록이 움직일 수 없는 경우 (게임 오버)
 				GameOver();
 			}
-/*			if(isAnimationDone) {
-				placeBlock();
-			}*/
+			placeBlock();
+
 		}
 
 
@@ -800,7 +799,6 @@ public class Board extends JPanel {
 		isPaused = false; // 게임이 일시 중지되었는지 나타내는 변수
 		curr =  getRandomBlock();// 현재 움직이고 있는 블록
 		bricks--;
-		timer.setDelay(10);
 		nextcurr = getRandomBlock(); // 다음 블럭
 		gameOver = false; // 게임오버를 알려주는변수 true == 게임오버
 
@@ -1070,20 +1068,51 @@ public class Board extends JPanel {
 					break;
 				case KeyEvent.VK_ENTER:
 					eraseCurr();
-					while (canMoveDown()) {
-						y++;
-						scores += point;
+					if(curr_name.equals("WeightBlock"))
+					{
+						while (canMoveDown()) {
+							y++;
+							for(int i=0;i<4;++i) {
+								board[y+1][x+i] = 0;
+							}
+						}
+					}
+					else if(curr_name.equals("BombBlock")) {
+						while (canMoveDown()) {
+							y++;
+						}
+					}
+
+					else
+					{
+						while (canMoveDown()) {
+							y++;
+							scores += point;
+						}
 					}
 					placeBlock();
+					if(curr_name.equals("BombBlock"))
+					{
+						for(int i=-1;i<3;++i)
+						{
+							for(int j= -1;j<3;++j)
+							{
+								if(y+j < 0 || y + j > 19 || x+i <0 || x+i > 9)
+									continue;
+								board[y+j][x+i] = 0;
+							}
+						}
+						eraseCurr();
+					}
+					checkLines();
 					curr = nextcurr;
 					nextcurr = getRandomBlock();
 					x = 3; // 새 블록의 x좌표를 시작 x 좌표를 설정합니다.
 					y = 0; // 새 블록의 y좌표를 시작 y 좌표를 설정합니다.
-					checkLines();
-					if(isAnimationDone)
-						placeBlock();
+					placeBlock();
 					drawBoard();
 					break;
+
 				case KeyEvent.VK_Q:
 					System.exit(0); // 'q' 키가 눌렸을 때, 프로그램을 종료합니다.
 					break;
