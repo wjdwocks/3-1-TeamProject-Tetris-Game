@@ -14,14 +14,14 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class NormalScoreBoard1 extends JPanel implements KeyListener {
+public class ClassicScoreBoard1 extends JPanel implements KeyListener {
     private JLabel keyMessage;
     private JPanel scoreTable;
     private Timer messageTimer;
     private JSONArray sortedScoreArray;
     private JSONParser scoreParser;
 
-    public NormalScoreBoard1() {
+    public ClassicScoreBoard1() {
         this.setSize(Main.SCREEN_WIDTH[0], Main.SCREEN_HEIGHT[0]);
         this.setLayout(new BorderLayout());
         JLabel title = new JLabel("Normal Score Board");

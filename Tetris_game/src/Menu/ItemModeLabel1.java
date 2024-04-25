@@ -105,6 +105,7 @@ public class ItemModeLabel1  extends JPanel implements KeyListener {
                 System.out.println("Easy Selected");
                 Main.frame.setSize(Main.SCREEN_WIDTH[3], Main.SCREEN_HEIGHT[3]);
                 Main.gamePanel.mode = 0;
+                Main.gamePanel.item = 1;
                 switchToScreen(Main.gamePanel);
                 Main.gamePanel.timer.start();
                 //Main.gamePanel.setSize(Main.SCREEN_WIDTH[0], Main.SCREEN_HEIGHT[0]);
@@ -115,6 +116,7 @@ public class ItemModeLabel1  extends JPanel implements KeyListener {
                 System.out.println("Normal Selected");
                 Main.frame.setSize(Main.SCREEN_WIDTH[3], Main.SCREEN_HEIGHT[3]);
                 Main.gamePanel.mode = 1;
+                Main.gamePanel.item = 1;
                 switchToScreen(Main.gamePanel);
                 Main.gamePanel.timer.start();
                 // Main.gamePanel.setSize(Main.SCREEN_WIDTH[0], Main.SCREEN_HEIGHT[0]);
@@ -125,6 +127,7 @@ public class ItemModeLabel1  extends JPanel implements KeyListener {
                 System.out.println("Hard Selected");
                 Main.frame.setSize(Main.SCREEN_WIDTH[3], Main.SCREEN_HEIGHT[3]);
                 Main.gamePanel.mode = 2;
+                Main.gamePanel.item = 1;
                 switchToScreen(Main.gamePanel);
                 Main.gamePanel.timer.start();
                 // Main.gamePanel.setSize(Main.SCREEN_WIDTH[0], Main.SCREEN_HEIGHT[0]);

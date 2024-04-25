@@ -112,6 +112,7 @@ public class ClassicModeLabel1  extends JPanel implements KeyListener {
             case 0: // Easy
                 System.out.println("Easy Selected1");
                 Main.frame.setSize(Main.SCREEN_WIDTH[3], Main.SCREEN_HEIGHT[3]);
+                Main.gamePanel.item = 0;
                 Main.gamePanel.mode = 0;
                 switchToScreen(Main.gamePanel);
                 Main.gamePanel.timer.start();
@@ -124,6 +125,7 @@ public class ClassicModeLabel1  extends JPanel implements KeyListener {
             case 1: // Normal
                 System.out.println("Normal Selected");
                 Main.frame.setSize(Main.SCREEN_WIDTH[3], Main.SCREEN_HEIGHT[3]);
+                Main.gamePanel.item = 0;
                 Main.gamePanel.mode = 1;
                 switchToScreen(Main.gamePanel);
                 Main.gamePanel.timer.start();
@@ -135,6 +137,7 @@ public class ClassicModeLabel1  extends JPanel implements KeyListener {
             case 2: // Hard
                 System.out.println("Hard Selected");
                 Main.frame.setSize(Main.SCREEN_WIDTH[3], Main.SCREEN_HEIGHT[3]);
+                Main.gamePanel.item = 0;
                 Main.gamePanel.mode = 2;
                 switchToScreen(Main.gamePanel);
                 Main.gamePanel.timer.start();
